@@ -21,7 +21,7 @@ for place in places:
 		print(place, places[place]['ADDRESS'])
 		tag = input('TAG: ')
 		places[place]['TAG'] = tag
-	choice = input('Save: y/n')
+	
 
 
 save_data()
