@@ -42,7 +42,7 @@ get_route(8, 22)
 
 
 # Search for the place
-def 
+# def 
 
 # Get user input
 def get_user_inputs():
