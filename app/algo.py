@@ -1,7 +1,7 @@
 class Node:
     def __init__(self,val,next=None):
-        self.val=val
-        self.next=next
+        self.val = val
+        self.next = next
 
 def route(distance_matrix,no_of_places):
     visited_status=[]
