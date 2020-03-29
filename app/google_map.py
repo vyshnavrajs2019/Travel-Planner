@@ -35,11 +35,11 @@ def print_order_of_visit(array):
 	string = get_string_repr_of_visit(array)
 	print(string)
 
-def convert_indexes_to_places(place_names, indexes):
+def convert_indexes_to_places(place_names, indexes, district):
 	places = []
 	for index in indexes:
 		name = place_names[index]
-		places.append(name)
+		places.append(name + " " + district)
 	return places
 
 def convert_sub_matrix_indexes_to_matrix_indexes(input_indexes, sub_matrix_indexes):
@@ -65,12 +65,13 @@ def test_tsp(input_indexes, sub_matrix):
 	return indexes
 
 
-def create_itinerary(algorithm, input_indexes, sub_matrix, place_names, driver, description):
+def create_itinerary(algorithm, input_indexes, sub_matrix, place_names, driver, description, district, matrix):
 	print(description)
 	indexes = algorithm(input_indexes, sub_matrix)
-	places = convert_indexes_to_places(place_names, indexes)
+	places = convert_indexes_to_places(place_names, indexes, district)
 	print_order_of_visit(places)
-	print_order_of_visit(indexes)
+	# print_order_of_visit(indexes)
+	print("Cost:", compute_cost(indexes, matrix))
 	url = create_itinerary_url(places)
 	driver.get(url)
 
@@ -85,9 +86,10 @@ def compare_tsp_algo(place_names, places, matrix, number_of_places=10, test_case
 		combos = combinations(places_indexes, number_of_places)
 		for combo in combos:
 			sub_matrix = create_sub_matrix(combo, matrix)
-			create_itinerary(test_algo, combo, sub_matrix, place_names, driver1, "Zameel")
-			create_itinerary(test_tsp, combo, sub_matrix, place_names, driver2, "TSP")
+			create_itinerary(test_algo, combo, sub_matrix, place_names, driver1, "Zameel", district, matrix)
+			create_itinerary(test_tsp, combo, sub_matrix, place_names, driver2, "TSP", district, matrix)
 			time.sleep(15)
+			print("\n\n\n")
 		test_cases -= 1
 
 def test_sequence(sequence, matrix, place_names):
