@@ -1,5 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from algo import route, sub_matrix, search
+from utils.tsp import tsp
+import time
+from itertools import combinations
 
 GOOGLE_URL = 'https://www.google.com/maps/dir/'
 DELAY_TIME = 20
@@ -13,16 +17,16 @@ def create_driver():
 	driver.implicitly_wait(DELAY_TIME)
 	return driver
 
-def compare_tsp_algo():
-	algo_driver = create_driver()
-	tsp_driver = create_driver()
-	t = 14
-	while t > 0:
+def compare_tsp_algo(place_names, places, matrix, number_of_places=10, test_cases=14):
+	driver1 = create_driver()
+	time.sleep(10)
+	driver2 = create_driver()
+	while test_cases > 0:
 		district = input('District: ')
-		indexes = search(district)
-		combos = combinations(indexes, 10)
+		indexes = search(district, places)
+		combos = combinations(indexes, number_of_places)
 		for combo in combos:
-			mat = sub_matrix(combo)
+			mat = sub_matrix(combo, matrix)
 			# Zams algo
 			head = route(mat.copy(), len(combo))
 			indices1 = []
@@ -55,7 +59,7 @@ def compare_tsp_algo():
 			print(" -> ".join(map(str, idx)))
 			param2 = "/".join(places2)
 			driver2.get(GOOGLE_URL + param2)
-			time.sleep(30)
+			time.sleep(15)
 
-		t -= 1
+		test_cases -= 1
 	
