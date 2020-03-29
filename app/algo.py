@@ -56,15 +56,15 @@ def next_place(distance_matrix,visited_status,head,no_of_places,tail):
 
 
 # Construct sub matrix
-def sub_matrix(indices, matrix):
-	indices = list(indices)
-	length = len(indices)
-	mat = [[0 for __ in range(length)] for _ in range(length)]
+def create_sub_matrix(indexes, matrix):
+	indexes = list(indexes)
+	length = len(indexes)
+	sub_matrix = [[0 for __ in range(length)] for _ in range(length)]
 	for i in range(length):
 		for j in range(length):
 			if i != j:
-				mat[i][j] = mat[j][i] = matrix[indices[i]][indices[j]]
-	return mat
+				sub_matrix[i][j] = sub_matrix[j][i] = matrix[indexes[i]][indexes[j]]
+	return sub_matrix
 
 # Search for a place
 def search(query, places):
