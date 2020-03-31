@@ -88,4 +88,3 @@ def generate_plan(places, place_names, matrix):
 		print("\n\n\n")
 		url = create_itinerary_url(place_order)
 		driver.get(url)
-		time.sleep(45)
