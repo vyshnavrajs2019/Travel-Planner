@@ -1,8 +1,14 @@
 import json, time
-from utils.time_format import time_format
+from utils.time_format import time_format, to_fixed
 from algo import route, create_sub_matrix, search
 from google_map import test_algo, compute_cost, convert_indexes_to_places, create_driver, create_itinerary_url, GOOGLE_URL
 from heapq import heappush, heappop
+
+# Convert to hour and minutes
+def convert_to_string_repr_time(minutes):
+	hours = int(minutes//60)
+	mins = int(minutes - hours*60)
+	return f'{to_fixed(hours, 2)} hr {to_fixed(mins, 2)} mins'
 
 # Get time
 def get_time(msg):
@@ -16,7 +22,7 @@ def get_user_inputs():
 	return {
 		'place': input('Place: '),
 		'days': int(input('Days: ')),
-		'max_places': int(input('Maximum places: ')),
+		# 'max_places': int(input('Maximum places: ')),
 		'starts_at': get_time('Starts at'),
 		'ends_at': get_time('Ends at')
 	}
@@ -43,7 +49,7 @@ def time_taken_to_visit(indexes, matrix, places, place_names):
 	for index in indexes:
 		place = place_names[index]
 		time_taken += places[place]['TIME'] * 60
-	return time_taken
+	return time_taken, (cost/25) * 60
 
 # Get the best places that could be visited within the total time
 def get_best_places(total_time, heap, places, place_names, matrix):
@@ -56,12 +62,17 @@ def get_best_places(total_time, heap, places, place_names, matrix):
 		sub_matrix = create_sub_matrix(result, matrix)
 		indexes = test_algo(result, sub_matrix)
 		prev_time_taken = time_taken
-		time_taken = time_taken_to_visit(indexes, matrix, places, place_names)
+		time_taken, travel_time = time_taken_to_visit(indexes, matrix, places, place_names)
 		if time_taken > total_time:
 			result.pop()
 			time_taken = prev_time_taken
 	sub_matrix = create_sub_matrix(result, matrix)
-	return test_algo(result, sub_matrix)
+	indexes = test_algo(result, sub_matrix)
+	time_taken, travel_time = time_taken_to_visit(indexes, matrix, places, place_names)
+	print('Total Time :', convert_to_string_repr_time(total_time))
+	print('Remaining Time:', convert_to_string_repr_time(total_time - time_taken))
+	print('Travel Time:', convert_to_string_repr_time(travel_time), travel_time)
+	return indexes
 	
 
 def generate_plan(places, place_names, matrix):
@@ -75,7 +86,7 @@ def generate_plan(places, place_names, matrix):
 		days = user_requirement.get('days')
 		starts_at = user_requirement.get('starts_at')
 		ends_at = user_requirement.get('ends_at')
-		max_places = user_requirement.get('max_places')
+		# max_places = user_requirement.get('max_places')
 		# Get all places
 		search_result = search(place, places)
 		# Sort according to the rating

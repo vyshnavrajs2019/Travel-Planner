@@ -5,7 +5,7 @@ class Node:
 
 def route(distance_matrix, no_of_places):
     visited_status=[]
-    maximum_distance = 0
+    maximum_distance = -1
     for i in range(no_of_places):
         visited_status.append(0)
         if(sum(distance_matrix[i])>maximum_distance):
