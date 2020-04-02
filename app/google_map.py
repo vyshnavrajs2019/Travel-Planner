@@ -42,6 +42,13 @@ def convert_indexes_to_places(place_names, indexes, district):
 		places.append(name + " " + district)
 	return places
 
+def convert_indexes_to_places_without_district(place_names, indexes):
+	places = []
+	for index in indexes:
+		name = place_names[index]
+		places.append(name)
+	return places
+
 def convert_sub_matrix_indexes_to_matrix_indexes(input_indexes, sub_matrix_indexes):
 	indexes = []
 	for index in sub_matrix_indexes:
