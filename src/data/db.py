@@ -3,7 +3,7 @@ import json
 
 
 # Data file
-DB_FILE_NAME = 'places.json'
+DB_FILE_NAME = 'data/places.json'
 
 
 def load_db():

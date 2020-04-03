@@ -1,7 +1,10 @@
 # Imports
+from heapq import heappush, heappop
 from haversine import haversine
 from user.requirements import user_requirement
 from data.db import search
+from algorithm.path import best_route
+from algorithm.scheduler import schedule
 
 def controller(
 		database	# Dict
@@ -13,16 +16,49 @@ def controller(
 	lookup_fields = ['DISTRICT']
 	search_results = search(database, lookup_fields, places)
 
-	# Create matrix and mapping
-	matrix, mapping = create_matrix_and_mapping(database, search_results)
+	# Sort places according to rating
+	heap = sort_places_by_rating(search_results, database)
 
-	# Create route
+	# Till the schedule fits
+	while True:
+		# Get all the remaining places
+		remaining_places = []
+		for rating, place in heap:
+			remaining_places.append(place)
 
-	# If schedule fits
+		# Create matrix and mapping
+		matrix, mapping = create_matrix_and_mapping(database, remaining_places)
 
-	# Else repeat
+		# Create route
+		head = best_route(matrix, len(remaining_places))
 
-	pass
+		# Get place visit order
+		place_visit_order = []
+		while head:
+			place_visit_order.append(mapping[head.val])
+		
+		# Generate schedule
+		possible, time_table = schedule(
+			matrix, 			# List[List[Float]]
+			mapping,			# Dict
+			database,			# Dict
+			place_visit_order,	# List[Str] 
+			total_days,			# Int 
+			starts_at,			# Int 
+			ends_at				# Int
+		)
+
+		# If schedule fits
+		if possible:
+			# Disply the schedule
+			for each_day in time_table:
+				for each_place in each_day:
+					print(each_place)
+			# Stop
+			break
+
+		# Else remove the place with the least rating
+		heappop(heap)
 
 
 def create_matrix_and_mapping(
@@ -54,3 +90,18 @@ def create_matrix_and_mapping(
 			distance = haversine(point_a, point_b)
 			matrix[i][j] = matrix[j][i] = distance
 	return matrix, mapping
+
+
+def sort_places_by_rating(
+		places,		# List[Str]
+		database	# Dict
+	):
+	# Initialize heap
+	heap = []
+
+	# Sort places according to rating
+	for place in places:
+		rating = float(database[place]['RATING'])
+		heappush(heap, (rating, place))
+
+	return heap

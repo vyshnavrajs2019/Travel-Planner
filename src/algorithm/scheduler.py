@@ -1,6 +1,6 @@
 # Imports
 from datetime import datetime, timedelta
-from ..utils import time_format
+from utils import time_format
 
 
 def schedule(
