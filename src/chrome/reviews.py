@@ -2,15 +2,18 @@ import time, json
 from .google_map import create_driver, get_url
 from collections import defaultdict
 
+CONFIG_FILE = 'chrome/config.json'
+USER_DB_FILE = 'chrome/user_db.json'
+
 user_reviews = defaultdict(dict)
 config = {}
 
 def load_data():
 	global user_reviews
 	global config
-	with open('chrome/config.json') as conf:
+	with open(CONFIG_FILE) as conf:
 		config = json.loads(conf.read())
-	with open('chrome/user_db.json') as user_db:
+	with open(USER_DB_FILE) as user_db:
 		user_reviews = json.loads(user_db.read())
 	return config['INDEX']
 
@@ -68,9 +71,8 @@ def collect_all_reviews(driver, place, index):
 		print("EXCEPTION")
 		print(e)
 	
-	with open('chrome/user_db.json', 'w') as user_db:
+	with open(USER_DB_FILE, 'w') as user_db:
 		user_db.write(json.dumps(user_reviews))
 
-	with open('chrome/config.json', 'w') as conf:
+	with open(CONFIG_FILE, 'w') as conf:
 		conf.write(json.dumps(config))
-
