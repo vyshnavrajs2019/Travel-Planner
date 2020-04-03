@@ -15,7 +15,7 @@ def best_route(distance_matrix,no_of_places):
 	if(distance_cost<minimum_distance_cost):
 		minimum_distance_cost=distance_cost
 		best_route_head=temp
-	if no_of_places > 1:
+	if(no_of_places>1):
 		head=route(distance_matrix,no_of_places,-1)
 		temp=head
 		distance_cost=0
@@ -66,7 +66,6 @@ def best_route(distance_matrix,no_of_places):
 		if(distance_cost<minimum_distance_cost):
 			minimum_distance_cost=distance_cost
 			best_route_head=temp
-	# print(minimum_distance_cost)
 	return best_route_head
 
 def route(distance_matrix,no_of_places,alorithm_no):
@@ -122,7 +121,7 @@ def next_place(distance_matrix,visited_status,head,no_of_places,tail,alorithm_no
 
 def route_1(distance_matrix,no_of_places,algorithm_no):
     visited_status=[]
-    maximum_distance = -1
+    maximum_distance = 0
     for i in range(no_of_places):
         visited_status.append(0)
         if(sum(distance_matrix[i])>maximum_distance):
@@ -144,6 +143,7 @@ def next_place_1(distance_matrix,visited_status,head,no_of_places,tail,algorithm
             if((visited_status[i]==0)&(distance_matrix[tail.val][i]+distance_matrix[i][head.val]<minimum_disatnce)):
                 minimum_disatnce = distance_matrix[tail.val][i]+distance_matrix[i][head.val]
                 next_place_index = i
+                # print(minimum_disatnce)
         else:
             no_of_non_vsited_places=0
             for j in range(no_of_places):
@@ -166,6 +166,7 @@ def next_place_1(distance_matrix,visited_status,head,no_of_places,tail,algorithm
     if(next_place_index==100000):
         return head
     else:
+        # print(place_names[next_place_index])
         distance = distance_matrix[tail.val][next_place_index]
         suitable_replacement=None
         temp=head
@@ -187,17 +188,18 @@ def next_place_1(distance_matrix,visited_status,head,no_of_places,tail,algorithm
 
 def route_2(distance_matrix,no_of_places,alorithm_no):
     visited_status=[0]
-    maximum_distance = -1
-    for i in range(no_of_places):
+    maximum_distance = 0
+    for i in range(no_of_places-1):
         visited_status.append(0)
-        if(sum(distance_matrix[i])>maximum_distance):
-            starting_index = i
-            maximum_distance=sum(distance_matrix[i])
-    maximum_distance = -1
-    for i in range(no_of_places):
-        if(distance_matrix[starting_index][i]>maximum_distance):
-            maximum_distance = distance_matrix[starting_index][i]
-            ending_index = i
+        for j in range(i+1,no_of_places):
+            if(distance_matrix[i][j]>maximum_distance):
+                maximum_distance = distance_matrix[i][j]
+                starting_index = i
+                ending_index = j
+    if(sum(distance_matrix[starting_index])<sum(distance_matrix[ending_index])):
+        temp = starting_index
+        starting_index = ending_index
+        ending_index = temp
     visited_status[starting_index]=1
     visited_status[ending_index]=1
     head = Node(starting_index)
