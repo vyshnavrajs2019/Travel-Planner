@@ -15,62 +15,63 @@ def best_route(distance_matrix,no_of_places):
 	if(distance_cost<minimum_distance_cost):
 		minimum_distance_cost=distance_cost
 		best_route_head=temp
-	head=route(distance_matrix,no_of_places,-1)
-	temp=head
-	distance_cost=0
-	while(head!=None):
-		if(head.next!=None):
-			distance_cost+=distance_matrix[head.val][head.next.val]
-		head=head.next
-	if(distance_cost<minimum_distance_cost):
-		minimum_distance_cost=distance_cost
-		best_route_head=temp
-	head=route_2(distance_matrix,no_of_places,0)
-	temp=head
-	distance_cost=0
-	while(head!=None):
-		if(head.next!=None):
-			distance_cost+=distance_matrix[head.val][head.next.val]
-		head=head.next
-	if(distance_cost<minimum_distance_cost):
-		minimum_distance_cost=distance_cost
-		best_route_head=temp
-	head=route_2(distance_matrix,no_of_places,1)
-	temp=head
-	distance_cost=0
-	while(head!=None):
-		if(head.next!=None):
-			distance_cost+=distance_matrix[head.val][head.next.val]
-		head=head.next
-	if(distance_cost<minimum_distance_cost):
-		minimum_distance_cost=distance_cost
-		best_route_head=temp
-	head=route_1(distance_matrix,no_of_places,0)
-	temp=head
-	distance_cost=0
-	while(head!=None):
-		if(head.next!=None):
-			distance_cost+=distance_matrix[head.val][head.next.val]
-		head=head.next
-	if(distance_cost<minimum_distance_cost):
-		minimum_distance_cost=distance_cost
-		best_route_head=temp
-	head=route_1(distance_matrix,no_of_places,1)
-	temp=head
-	distance_cost=0
-	while(head!=None):
-		if(head.next!=None):
-			distance_cost+=distance_matrix[head.val][head.next.val]
-		head=head.next
-	if(distance_cost<minimum_distance_cost):
-		minimum_distance_cost=distance_cost
-		best_route_head=temp
-	print(minimum_distance_cost)
+	if no_of_places > 1:
+		head=route(distance_matrix,no_of_places,-1)
+		temp=head
+		distance_cost=0
+		while(head!=None):
+			if(head.next!=None):
+				distance_cost+=distance_matrix[head.val][head.next.val]
+			head=head.next
+		if(distance_cost<minimum_distance_cost):
+			minimum_distance_cost=distance_cost
+			best_route_head=temp
+		head=route_2(distance_matrix,no_of_places,0)
+		temp=head
+		distance_cost=0
+		while(head!=None):
+			if(head.next!=None):
+				distance_cost+=distance_matrix[head.val][head.next.val]
+			head=head.next
+		if(distance_cost<minimum_distance_cost):
+			minimum_distance_cost=distance_cost
+			best_route_head=temp
+		head=route_2(distance_matrix,no_of_places,1)
+		temp=head
+		distance_cost=0
+		while(head!=None):
+			if(head.next!=None):
+				distance_cost+=distance_matrix[head.val][head.next.val]
+			head=head.next
+		if(distance_cost<minimum_distance_cost):
+			minimum_distance_cost=distance_cost
+			best_route_head=temp
+		head=route_1(distance_matrix,no_of_places,0)
+		temp=head
+		distance_cost=0
+		while(head!=None):
+			if(head.next!=None):
+				distance_cost+=distance_matrix[head.val][head.next.val]
+			head=head.next
+		if(distance_cost<minimum_distance_cost):
+			minimum_distance_cost=distance_cost
+			best_route_head=temp
+		head=route_1(distance_matrix,no_of_places,1)
+		temp=head
+		distance_cost=0
+		while(head!=None):
+			if(head.next!=None):
+				distance_cost+=distance_matrix[head.val][head.next.val]
+			head=head.next
+		if(distance_cost<minimum_distance_cost):
+			minimum_distance_cost=distance_cost
+			best_route_head=temp
+	# print(minimum_distance_cost)
 	return best_route_head
 
 def route(distance_matrix,no_of_places,alorithm_no):
     visited_status=[]
-    maximum_distance = 0
+    maximum_distance = -1
     for i in range(no_of_places):
         visited_status.append(0)
         if(sum(distance_matrix[i])>maximum_distance):
@@ -183,25 +184,6 @@ def next_place_1(distance_matrix,visited_status,head,no_of_places,tail,algorithm
             tail.next=Node(next_place_index)
             tail=tail.next
         return next_place_1(distance_matrix,visited_status,head,no_of_places,tail,algorithm_no)
-
-# def route_2(distance_matrix,no_of_places,algorithm_no):
-#     visited_status=[0]
-#     maximum_distance = 0
-#     for i in range(no_of_places):
-#         visited_status.append(0)
-#         if(sum(distance_matrix[i])>maximum_distance):
-#             starting_index = i
-#             maximum_distance=sum(distance_matrix[i])
-#     maximum_distance = 0
-#     for i in range(no_of_places):
-#         if(distance_matrix[starting_index][i]>maximum_distance):
-#             maximum_distance = distance_matrix[starting_index][i]
-#             ending_index = i
-#     visited_status[starting_index]=1
-#     visited_status[ending_index]=1
-#     head = Node(starting_index)
-#     head.next=Node(ending_index)
-#     best_route=next_place_2(distance_matrix,visited_status,head,no_of_places,head.next,algorithm_no)
 
 def route_2(distance_matrix,no_of_places,alorithm_no):
     visited_status=[0]
