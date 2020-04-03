@@ -1,13 +1,13 @@
 def user_requirement():
 	# Get the list of places
-	places = ['kozhikode']# input('PLACES: ').strip().split(', ')
+	places = input('PLACES: ').strip().split(', ')
 
 	# Duration
-	starts_at = 6*60 #get_duration('STARTS AT')
-	ends_at = 18*60 #get_duration('ENDS AT')
+	starts_at = get_duration('STARTS AT')
+	ends_at = get_duration('ENDS AT')
 
 	# Number of days
-	total_days = 5#int(input('TOTAL DAYS: '))
+	total_days = int(input('TOTAL DAYS: '))
 
 	# Budget
 	total_budget = 20000 #int(input('TOTAL BUDGET: '))

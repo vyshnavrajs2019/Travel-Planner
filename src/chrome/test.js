@@ -1,0 +1,1 @@
+function getLength(){let l = document.querySelectorAll('div.section-review');return (l.length - 1)}function bringUp(idx){document.querySelectorAll('div.section-review')[idx].scrollIntoView(true);}let pre=-10;let idx=0;while(pre!=idx){idx = getLength();bringUp(idx);let aVar=0;while(aVar<1000000){aVar++;}pre=idx}
