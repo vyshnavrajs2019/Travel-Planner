@@ -21,7 +21,6 @@ def controller(
 
 	# Till the schedule fits
 	while True:
-		print('Checking for', len(heap))
 		# Get all the remaining places
 		remaining_places = []
 		for rating, place in heap:
@@ -54,9 +53,12 @@ def controller(
 		# If schedule fits
 		if possible:
 			# Disply the schedule
-			for each_day in time_table:
+			print()
+			for index, each_day in enumerate(time_table):
+				print('-' * 15, 'DAY', index + 1, '-' * 15)
 				for each_place in each_day:
 					print(each_place)
+				print("\n")
 			# Stop
 			break
 
@@ -84,7 +86,7 @@ def create_matrix_and_mapping(
 		mapping[place_a] = i
 		for j in range(i + 1, length):
 			# Create point B
-			place_b = places[i]
+			place_b = places[j]
 			point_b = (
 				float(database[place_b]['COORDINATES']['LATITUDE']),
 				float(database[place_b]['COORDINATES']['LONGITUDE'])

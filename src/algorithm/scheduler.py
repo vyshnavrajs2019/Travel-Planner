@@ -41,6 +41,7 @@ def split_to_days(
 		# If another day add a list to time table to store next days schedule
 		if another_day:
 			time_table.append([])
+			another_day = False
 		# Add schedule to time table
 		schedule_repr = get_string_repr_duration_and_place(current_datetime, place, database[place]['TIME'])
 		time_table[-1].append(schedule_repr)
@@ -56,7 +57,9 @@ def split_to_days(
 			next_place_reach_datetime = get_next_place_reach_datetime(mapping, matrix, index, place_visit_order, current_datetime)
 			remaining_timedelta = next_place_reach_datetime - current_end_datetime
 			# Get next days current datetime and add remaining time delta
-			current_datetime = get_datetime(current_datetime,starts_at)
+			current_datetime = get_datetime(current_datetime, starts_at)
+			current_end_datetime = current_end_datetime + timedelta(days=1)
+			#print(current_end_datetime, current_datetime, remaining_timedelta)
 			current_datetime = current_datetime + remaining_timedelta
 			continue
 		# Check if next place can be visited
@@ -65,6 +68,7 @@ def split_to_days(
 		if not can_next_place_be_visited(database, index, place_visit_order, current_datetime, current_end_datetime):
 			another_day = True
 			current_datetime = get_datetime(current_datetime, starts_at)
+			current_end_datetime = current_end_datetime + timedelta(days=1)
 	return time_table
 
 
@@ -115,7 +119,7 @@ def convert_distance_to_time(
 	# Initialize traveling modes
 	MODES = { 'CAR': 25 }
 	# Get time taken
-	time_taken = distance // MODES[mode]
+	time_taken = distance / MODES[mode]
 	return time_taken
 
 
