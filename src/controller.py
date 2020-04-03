@@ -21,6 +21,7 @@ def controller(
 
 	# Till the schedule fits
 	while True:
+		print('Checking for', len(heap))
 		# Get all the remaining places
 		remaining_places = []
 		for rating, place in heap:
@@ -35,7 +36,9 @@ def controller(
 		# Get place visit order
 		place_visit_order = []
 		while head:
-			place_visit_order.append(mapping[head.val])
+			index = head.val
+			place_visit_order.append(remaining_places[index])
+			head = head.next
 		
 		# Generate schedule
 		possible, time_table = schedule(

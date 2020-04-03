@@ -122,7 +122,7 @@ def next_place(distance_matrix,visited_status,head,no_of_places,tail,alorithm_no
 
 def route_1(distance_matrix,no_of_places,algorithm_no):
     visited_status=[]
-    maximum_distance = 0
+    maximum_distance = -1
     for i in range(no_of_places):
         visited_status.append(0)
         if(sum(distance_matrix[i])>maximum_distance):
@@ -187,13 +187,13 @@ def next_place_1(distance_matrix,visited_status,head,no_of_places,tail,algorithm
 
 def route_2(distance_matrix,no_of_places,alorithm_no):
     visited_status=[0]
-    maximum_distance = 0
+    maximum_distance = -1
     for i in range(no_of_places):
         visited_status.append(0)
         if(sum(distance_matrix[i])>maximum_distance):
             starting_index = i
             maximum_distance=sum(distance_matrix[i])
-    maximum_distance = 0
+    maximum_distance = -1
     for i in range(no_of_places):
         if(distance_matrix[starting_index][i]>maximum_distance):
             maximum_distance = distance_matrix[starting_index][i]

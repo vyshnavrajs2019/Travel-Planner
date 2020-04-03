@@ -21,4 +21,4 @@ def get_duration(
 	print(description)
 	hours = int(input('HOURS: '))
 	minutes = int(input('MINUTES: '))
-	return [hours, minutes]
+	return hours * 60 + minutes

@@ -92,8 +92,8 @@ def get_string_repr_duration_and_place(
 	# DateTime after spent
 	end_datetime = get_datetime_after_spent(current_datetime, spent_time)
 	# Get time format of start and end time
-	start_time_format = time_format(current_datetime.hour, current_datetime.minutes)
-	end_time_format = time_format(end_datetime.hour, end_datetime.minutes)
+	start_time_format = time_format(current_datetime.hour, current_datetime.minute)
+	end_time_format = time_format(end_datetime.hour, end_datetime.minute)
 	return f'{ start_time_format } - { end_time_format } - { place }'
 
 
@@ -101,8 +101,8 @@ def get_datetime_after_spent(
 		current_datetime,	# DateTime
 		spent_time			# Int
 	):
-	# Initialize datetime after spent time
-	spent_duration_timedelta = current_datetime + timedelta(hours=spent_time)
+	# Initialize timedelta for spent time
+	spent_duration_timedelta = timedelta(hours=spent_time)
 	# Initialize end datetime
 	end_datetime = current_datetime + spent_duration_timedelta
 	return end_datetime
