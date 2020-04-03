@@ -18,19 +18,26 @@ from chrome.reviews import (
 from chrome.google_map import create_driver
 
 START_INDEX = 0
-LAST_INDEX = 10
+LAST_INDEX = 0
 
 driver = create_driver()
-START_INDEX = load_data()
-if START_INDEX == None:
-	START_INDEX = 0
+index = load_data()
+if index == None:
+	index = START_INDEX
 else:
-	START_INDEX = START_INDEX + 1
+	if index > LAST_INDEX or index < START_INDEX:
+		print("Your index is not between start and last!!")
+		print("Please change the INDEX in your config file at chrome/config.json")
+		exit()
+	index = index + 1
 place_names = list(database.keys())
 
-for idx in range(START_INDEX, LAST_INDEX + 1):
+print('CRAWLNIG STARTED\n')
+
+for idx in range(index, LAST_INDEX + 1):
 	place = place_names[idx]
 	get_place(driver, place)
 	if click_on_all_reviews(driver):
 		collect_all_reviews(driver, place + " " + database[place]['DISTRICT'], idx)
-	
+
+print('\nCRAWLING FINISHED')
