@@ -7,7 +7,8 @@ from algorithm.path import best_route
 from algorithm.scheduler import schedule
 
 def controller(
-		database	# Dict
+		database,		# Dict
+		MAXIMUM_REVIEWS	# Int
 	):
 	# Get user requirements
 	places, starts_at, ends_at, total_days, total_budget = user_requirement()
@@ -17,7 +18,7 @@ def controller(
 	search_results = search(database, lookup_fields, places)
 
 	# Sort places according to rating
-	heap = sort_places_by_rating(search_results, database)
+	heap = sort_places_by_rating_review(search_results, database, MAXIMUM_REVIEWS)
 
 	# Till the schedule fits
 	while True:
@@ -89,9 +90,18 @@ def create_matrix_and_mapping(
 	return matrix, mapping
 
 
-def sort_places_by_rating(
-		places,		# List[Str]
-		database	# Dict
+def weighted_rating(
+		rating,			# Float
+		reviews, 		# Int
+		MAXIMUM_REVIEWS	# Int
+	):
+	return (1/(1+exp((-reviews*10)/MAXIMUM_REVIEWS)))*rating
+
+
+def sort_places_by_rating_review(
+		places,			# List[Str]
+		database,		# Dict
+		MAXIMUM_REVIEWS	# Int
 	):
 	# Initialize heap
 	heap = []
@@ -99,6 +109,8 @@ def sort_places_by_rating(
 	# Sort places according to rating
 	for place in places:
 		rating = float(database[place]['RATING'])
-		heappush(heap, (rating, place))
+		reviews = int(database[place]['REVIEWS'])
+		weight_rating_value = weighted_rating(rating, reviews, MAXIMUM_REVIEWS)
+		heappush(heap, (weight_rating_value, place))
 
 	return heap
