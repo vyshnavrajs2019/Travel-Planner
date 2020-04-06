@@ -1,6 +1,7 @@
 # Imports
 from heapq import heappush, heappop
 from haversine import haversine
+from math import exp
 from user.requirements import user_requirement
 from data.db import search
 from algorithm.path import best_route
@@ -95,6 +96,7 @@ def weighted_rating(
 		reviews, 		# Int
 		MAXIMUM_REVIEWS	# Int
 	):
+	reviews = int("".join(reviews.split(",")))
 	return (1/(1+exp((-reviews*10)/MAXIMUM_REVIEWS)))*rating
 
 
@@ -109,7 +111,7 @@ def sort_places_by_rating_review(
 	# Sort places according to rating
 	for place in places:
 		rating = float(database[place]['RATING'])
-		reviews = int(database[place]['REVIEWS'])
+		reviews = database[place]['REVIEWS']
 		weight_rating_value = weighted_rating(rating, reviews, MAXIMUM_REVIEWS)
 		heappush(heap, (weight_rating_value, place))
 
