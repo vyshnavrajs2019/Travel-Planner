@@ -10,7 +10,7 @@ def user_requirement():
 	total_days = int(input('TOTAL DAYS: '))
 
 	# Budget
-	total_budget = 20000 #int(input('TOTAL BUDGET: '))
+	total_budget = int(input('TOTAL BUDGET: '))
 
 	return places, starts_at, ends_at, total_days, total_budget
 	

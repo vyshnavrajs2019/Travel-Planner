@@ -47,7 +47,8 @@ def controller(
 			place_visit_order,	# List[Str] 
 			total_days,			# Int 
 			starts_at,			# Int 
-			ends_at				# Int
+			ends_at,			# Int
+			total_budget		# Float
 		)
 
 		# If schedule fits

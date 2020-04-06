@@ -2,6 +2,9 @@
 from datetime import datetime, timedelta
 from utils import time_format
 
+# Initialize traveling modes and costs
+MODES = { 'CAR': 25 }
+COSTS = { 'CAR': 70 }
 
 def schedule(
 		matrix, 			# List[List[Float]]
@@ -10,10 +13,12 @@ def schedule(
 		place_visit_order,	# List[Str] 
 		days,				# Int 
 		starts_at,			# Int 
-		ends_at				# Int
+		ends_at,			# Int
+		total_budget,		# Float
+		mode='CAR'			# Str
 	):
 	# Split into days
-	time_table = split_to_days(matrix, mapping, database, place_visit_order, starts_at, ends_at)
+	time_table = split_to_days(matrix, mapping, database, place_visit_order, starts_at, ends_at, total_budget, mode)
 	# Check if schedule fits
 	if len(time_table) <= days:
 		return True, time_table
@@ -27,7 +32,9 @@ def split_to_days(
 		database,			# Dict
 		place_visit_order,	# List[Str]
 		starts_at,			# Int 
-		ends_at				# Int
+		ends_at,			# Int
+		total_budget,		# Float
+		mode				# Str
 	):
 	# Initialize the time table to store the schedule
 	time_table = []
@@ -37,24 +44,36 @@ def split_to_days(
 	current_end_datetime = get_datetime(datetime.today(), ends_at)
 	# For all places combine travel time and time spent at the place
 	another_day = True
+	# Distance covered to reach current place
+	distance_covered_from_previous_place = 0
 	for index, place in enumerate(place_visit_order):
 		# If another day add a list to time table to store next days schedule
 		if another_day:
 			time_table.append([])
 			another_day = False
 		# Add schedule to time table
-		schedule_repr = get_string_repr_duration_and_place(current_datetime, place, database[place]['TIME'])
+		schedule_repr = get_string_repr_duration_and_place(current_datetime, place + ", " + database[place]['DISTRICT'].capitalize() + ", RATING: " + database[place]['RATING'], database[place]['TIME'])
 		time_table[-1].append(schedule_repr)
 		# Get datetime after spent
 		current_datetime = get_datetime_after_spent(current_datetime, database[place]['TIME'])
+		# Get budget after spenting
+		total_budget -= (distance_covered_from_previous_place / MODES.get(mode)) * COSTS.get(mode)
+		total_budget -= database[place]['COST']
+		# If budget less than 0 pop the last place and return
+		if total_budget < 0:
+			if time_table[-1]:
+				time_table[-1].pop()
+			if not time_table[-1]:
+				time_table.pop()
+			return time_table
 		# Check if no more places are to be visited
 		if index + 1 >= len(place_visit_order):
 			continue
 		# Check if next place can be reached
-		if not can_next_place_be_reached(mapping, matrix, index, place_visit_order, current_datetime, current_end_datetime):
+		if not can_next_place_be_reached(mapping, matrix, index, place_visit_order, current_datetime, current_end_datetime, mode):
 			# Set flag and compute remaining time delta
 			another_day = True
-			next_place_reach_datetime = get_next_place_reach_datetime(mapping, matrix, index, place_visit_order, current_datetime)
+			next_place_reach_datetime = get_next_place_reach_datetime(mapping, matrix, index, place_visit_order, current_datetime, mode)
 			remaining_timedelta = next_place_reach_datetime - current_end_datetime
 			# Get next days current datetime and add remaining time delta
 			current_datetime = get_datetime(current_datetime, starts_at)
@@ -63,9 +82,11 @@ def split_to_days(
 			current_datetime = current_datetime + remaining_timedelta
 			continue
 		# Check if next place can be visited
-		current_datetime = get_next_place_reach_datetime(mapping, matrix, index, place_visit_order, current_datetime)
+		current_datetime = get_next_place_reach_datetime(mapping, matrix, index, place_visit_order, current_datetime, mode)
+		# Distance covered to reach this place
+		distance_covered_from_previous_place = distance_covered_to_reach_next_place(mapping, matrix, index, place_visit_order)
 		# Check if next place can be visited
-		if not can_next_place_be_visited(database, index, place_visit_order, current_datetime, current_end_datetime):
+		if not can_next_place_be_visited(database, index, place_visit_order, current_datetime, current_end_datetime, mode):
 			another_day = True
 			current_datetime = get_datetime(current_datetime, starts_at)
 			current_end_datetime = current_end_datetime + timedelta(days=1)
@@ -114,10 +135,8 @@ def get_datetime_after_spent(
 
 def convert_distance_to_time(
 		distance,	# Float
-		mode='CAR'	# Str
+		mode		# Str
 	):
-	# Initialize traveling modes
-	MODES = { 'CAR': 25 }
 	# Get time taken
 	time_taken = distance / MODES[mode]
 	return time_taken
@@ -130,8 +149,9 @@ def can_next_place_be_reached(
 		place_visit_order,		# List[Str]
 		current_datetime,		# DateTime	
 		current_end_datetime,	# DateTime
+		mode					# Str
 	):
-	next_place_reach_datetime = get_next_place_reach_datetime(mapping, matrix, current_index, place_visit_order, current_datetime)
+	next_place_reach_datetime = get_next_place_reach_datetime(mapping, matrix, current_index, place_visit_order, current_datetime, mode)
 	if next_place_reach_datetime > current_end_datetime:
 		return False
 	return True
@@ -142,16 +162,31 @@ def get_next_place_reach_datetime(
 		matrix,				# List[List[Int]]
 		current_index,		# Int
 		place_visit_order,	# List[Str]
-		current_datetime	# DateTime
+		current_datetime,	# DateTime
+		mode				# Str
 	):
 	# Compute time taken to reach next place
-	time_taken_to_reach_next_place = get_time_taken_to_reach_next_place(mapping, matrix, current_index, place_visit_order)
+	time_taken_to_reach_next_place = get_time_taken_to_reach_next_place(mapping, matrix, current_index, place_visit_order, mode)
 	time_delta_to_reach_next_place = timedelta(hours=time_taken_to_reach_next_place)
 	next_place_reach_datetime = current_datetime + time_delta_to_reach_next_place
 	return next_place_reach_datetime
 
 
 def get_time_taken_to_reach_next_place(
+		mapping,			# Dict
+		matrix,				# List[List[Int]]
+		current_index,		# Int
+		place_visit_order,	# List[Str]
+		mode				# Str
+	):
+	# Get the distance covered to reach next place
+	distance = distance_covered_to_reach_next_place(mapping, matrix, current_index, place_visit_order)
+	# Convert distance to time
+	time_taken = convert_distance_to_time(distance, mode)
+	return time_taken
+
+
+def distance_covered_to_reach_next_place(
 		mapping,			# Dict
 		matrix,				# List[List[Int]]
 		current_index,		# Int
@@ -167,10 +202,7 @@ def get_time_taken_to_reach_next_place(
 	map_index_next_place = mapping[next_place]
 	# Compute the distance
 	distance = matrix[map_index_current_place][map_index_next_place]
-	# Convert distance to time
-	time_taken = convert_distance_to_time(distance)
-	return time_taken
-
+	return distance
 
 def can_next_place_be_visited(
 		database,				# Dict
@@ -178,6 +210,7 @@ def can_next_place_be_visited(
 		place_visit_order,		# List[Str]
 		current_datetime,		# DateTime	
 		current_end_datetime,	# DateTime
+		mode					# Str
 	):
 	# Get next place index, next place and visit time
 	next_index = current_index + 1
