@@ -40,16 +40,7 @@ def controller(
 			head = head.next
 		
 		# Generate schedule
-		possible, time_table = schedule(
-			matrix, 			# List[List[Float]]
-			mapping,			# Dict
-			database,			# Dict
-			place_visit_order,	# List[Str] 
-			total_days,			# Int 
-			starts_at,			# Int 
-			ends_at,			# Int
-			total_budget		# Float
-		)
+		possible, time_table = schedule(matrix, mapping, database, place_visit_order, total_days, starts_at, ends_at, total_budget)
 
 		# If schedule fits
 		if possible:
