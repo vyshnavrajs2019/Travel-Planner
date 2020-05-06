@@ -21,26 +21,26 @@ def controller(
 	# Sort places according to rating
 	heap = sort_places_by_rating_review(search_results, database, MAXIMUM_REVIEWS)
 
-	# Get all the remaining places
-	remaining_places = []
-	for rating, place in heap:
-		remaining_places.append(place)
-
-	# Create matrix and mapping
-	matrix, mapping = create_matrix_and_mapping(database, remaining_places)
-
-	# Create route
-	head = best_route(matrix, len(remaining_places))
-
-	# Get place visit order
-	place_visit_order = []
-	while head:
-		index = head.val
-		place_visit_order.append(remaining_places[index])
-		head = head.next
-	
 	# Till the schedule fits
 	while True:
+		# Get all the remaining places
+		remaining_places = []
+		for rating, place in heap:
+			remaining_places.append(place)
+
+		# Create matrix and mapping
+		matrix, mapping = create_matrix_and_mapping(database, remaining_places)
+
+		# Create route
+		head = best_route(matrix, len(remaining_places))
+
+		# Get place visit order
+		place_visit_order = []
+		while head:
+			index = head.val
+			place_visit_order.append(remaining_places[index])
+			head = head.next
+		
 		# Generate schedule
 		possible, time_table = schedule(matrix, mapping, database, place_visit_order, total_days, starts_at, ends_at, total_budget)
 
@@ -57,11 +57,7 @@ def controller(
 			break
 
 		# Else remove the place with the least rating
-		rating, place = heappop(heap)
-
-		# Get index and mark None
-		index = mapping[place]
-		place_visit_order[index] = None
+		heappop(heap)
 
 
 def create_matrix_and_mapping(
