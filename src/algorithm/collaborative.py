@@ -98,7 +98,9 @@ def RecommentedPlaces(districts,userid,no,watched):
         places=places.union(set(district_places[district]))
     places=list(places)
     print("The recommended places for you are: ")
-    print(topNRecommendations(userid,no,places,watched))
+    recommendedplaces = topNRecommendations(userid,no,places,watched)
+    print(recommendedplaces)
+    return recommendedplaces
 
 # activeUser=int(input("Enter userid: "))
 # districts=list(input().split(','))
