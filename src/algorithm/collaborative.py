@@ -6,10 +6,10 @@ from math import sqrt
 from math import isnan
 from scipy.stats import pearsonr
 
-data = pd.read_csv('../data/n_data.csv')
-placeInfo = pd.read_csv('../data/t_data.csv')
+data = pd.read_csv('data/n_data.csv')
+placeInfo = pd.read_csv('data/t_data.csv')
 
-with open("../data/district_wise_places.json") as r:
+with open("data/district_wise_places.json") as r:
     district_places = json.loads(r.read())
 
 userIds = data.userId
