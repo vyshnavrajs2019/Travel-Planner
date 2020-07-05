@@ -6,17 +6,21 @@ from user.requirements import user_requirement
 from data.db import search
 from algorithm.path import best_route
 from algorithm.scheduler import schedule
+from algorithm.collaborative import RecommentedPlaces as recommended_places
+
+NO_OF_PLACES_PER_DAY = 5
 
 def controller(
 		database,		# Dict
 		MAXIMUM_REVIEWS	# Int
 	):
 	# Get user requirements
-	places, starts_at, ends_at, total_days, total_budget = user_requirement()
+	places, starts_at, ends_at, total_days, total_budget, user_id, include_visited_places = user_requirement()
 
 	# Search places
-	lookup_fields = ['DISTRICT']
-	search_results = search(database, lookup_fields, places)
+	# lookup_fields = ['DISTRICT']
+	# search_results = search(database, lookup_fields, places)
+	search_results = recommended_places(places, user_id, total_days * NO_OF_PLACES_PER_DAY, include_visited_places)
 
 	# Sort places according to rating
 	heap = sort_places_by_rating_review(search_results, database, MAXIMUM_REVIEWS)

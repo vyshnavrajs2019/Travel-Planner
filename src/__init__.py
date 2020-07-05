@@ -3,8 +3,6 @@ from data.db import load_db
 import controller
 
 
-# A new change
-
 # Load database
 database = load_db()
 

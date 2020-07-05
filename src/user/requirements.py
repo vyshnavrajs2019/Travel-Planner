@@ -12,7 +12,13 @@ def user_requirement():
 	# Budget
 	total_budget = int(input('TOTAL BUDGET: '))
 
-	return places, starts_at, ends_at, total_days, total_budget
+	# User ID
+	user_id = int(input('USER ID: ').strip())
+
+	# Include already visited places
+	include_visited_places = input('INCLUDE VISITED PLACES: Y/N') == "Y"
+
+	return places, starts_at, ends_at, total_days, total_budget, user_id, include_visited_places
 	
 
 def get_duration(
