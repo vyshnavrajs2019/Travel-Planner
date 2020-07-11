@@ -96,7 +96,7 @@ def topNRecommendations(activeUser, N, places, watched):
             i-1 for i in topRecommendations.index]]
     except ZeroDivisionError:
         print("You can't divide by zero!")
-    return list(topRecommendationTitles.title)
+    return topRecommendationTitles
 
 
 def RecommentedPlaces(districts, userid, no, watched):
@@ -106,7 +106,6 @@ def RecommentedPlaces(districts, userid, no, watched):
     places = list(places)
     print("The recommended places for you are: ")
     result = topNRecommendations(userid, no, places, watched)
-    print(result)
     return result
 
 # activeUser=int(input("Enter userid: "))

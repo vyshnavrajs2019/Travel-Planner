@@ -7,6 +7,7 @@ from data.db import search
 from algorithm.path import best_route
 from algorithm.scheduler import schedule
 from algorithm.collaborative import RecommentedPlaces as recommended_places
+import csv
 
 NO_OF_PLACES_PER_DAY = 5
 
@@ -20,7 +21,10 @@ def controller(
 	# Search places
 	# lookup_fields = ['DISTRICT']
 	# search_results = search(database, lookup_fields, places)
-	search_results = recommended_places(places, user_id, total_days * NO_OF_PLACES_PER_DAY, include_visited_places)
+	dframe = recommended_places(places, user_id, total_days * NO_OF_PLACES_PER_DAY, include_visited_places)
+
+	search_results = list(dframe.title)
+	item_ids = list(dframe.itemId)
 
 	# Sort places according to rating
 	heap = sort_places_by_rating_review(search_results, database, MAXIMUM_REVIEWS)
@@ -57,6 +61,16 @@ def controller(
 				for each_place in each_day:
 					print(each_place)
 				print("\n")
+
+			print("\nYOUR FEEDBACK\n")
+
+			with open('data/n_data.csv', 'a') as f:
+				writer = csv.writer(f)
+				for place in place_visit_order:
+					index = search_results.index(place)
+					item_id = item_ids[index]
+					writer.writerow([user_id, item_id, float(input('Rating: '))])
+
 			# Stop
 			break
 
