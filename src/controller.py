@@ -69,7 +69,7 @@ def controller(
 				for place in place_visit_order:
 					index = search_results.index(place)
 					item_id = item_ids[index]
-					writer.writerow([user_id, item_id, float(input('Rating: '))])
+					writer.writerow([user_id, item_id, float(input(place + ' rating: '))])
 
 			# Stop
 			break
